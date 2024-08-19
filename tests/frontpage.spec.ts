@@ -1,9 +1,18 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
+const login = async (page, username, password) => {
+  await page.locator('[data-test="username"]').fill(username);
+  await page.locator('[data-test="password"]').fill(password);
+  await page.locator('[data-test="login-button"]').click();
+}
 
+const logout = async (page) => {
+  await page.getByRole('button', { name: 'Open Menu' }).click();
+  await page.locator('[data-test="logout-sidebar-link"]').click();
+}
 test.beforeEach(async ({ page }) => {
-  await page.goto('https://saucedemo.com/');
+  await page.goto('https://www.saucedemo.com/');
 });
 
 //check essential elements to be presented on the page
@@ -17,19 +26,14 @@ test.describe('Verify page content and try different login options (both correct
 });
 
 //Perform correct login, ./inventory page loaded correctly 
-test('Use login standart_user', async ({ page }) => {
+test('use login standart_user', async ({ page }) => {
 
-  await page.locator('[data-test="username"]').fill('standard_user');
-  await page.locator('[data-test="password"]').fill('secret_sauce');
-  await page.locator('[data-test="login-button"]').click();
-
+  await login(page, 'standard_user', 'secret_sauce');
   expect(page.url()).toBe('https://www.saucedemo.com/inventory.html');
   await expect(page.locator('.title')).toHaveText('Products');
   await expect(page.locator('.inventory_item')).toHaveCount(6);
-  await page.getByRole('button', { name: 'Open Menu' }).click();
-
-  await page.locator('[data-test="logout-sidebar-link"]').click();
-  await expect(page.url()).toBe('https://www.saucedemo.com/');
+  await logout(page);
+  await expect(page.url()).toBe('https://www.saucedemo.com/'); 
 });
 
 
@@ -43,51 +47,50 @@ test('Use login locked_out_user', async ({ page }) => {
 
 //Perform correct login, ./inventory page loaded incorrectly, wrong images
 test('Use login problem_user', async ({ page }) => {
-  await page.locator('[data-test="username"]').fill('problem_user');
-  await page.locator('[data-test="password"]').fill('secret_sauce');
-  await page.locator('[data-test="login-button"]').click();
+  await login(page, 'problem_user', 'secret_sauce');
   expect(page.url()).toBe('https://www.saucedemo.com/inventory.html');
-  await page.getByRole('button', { name: 'Open Menu' }).click();
-  await page.locator('[data-test="logout-sidebar-link"]').click();
+  await logout(page);
   await expect(page.url()).toBe('https://www.saucedemo.com/'); 
 });
 
 //Perform correct login, slow page loading >>>5000ms, ./inventory page loaded correctly 
 test('Use login performance_glitch_user', async ({ page }) => {
-  await page.locator('[data-test="username"]').fill('performance_glitch_user');
-  await page.locator('[data-test="password"]').fill('secret_sauce');
-  await page.locator('[data-test="login-button"]').click();
+  await login(page, 'performance_glitch_user', 'secret_sauce');
   expect(page.url()).toBe('https://www.saucedemo.com/inventory.html');
-  await page.getByRole('button', { name: 'Open Menu' }).click();
-  await page.locator('[data-test="logout-sidebar-link"]').click(); 
+  await logout(page); 
   await expect(page.url()).toBe('https://www.saucedemo.com/');
 });
 
 //???????????
 test('Login error_user', async ({ page }) => {
-  await page.locator('[data-test="username"]').fill('error_user');
-  await page.locator('[data-test="password"]').fill('secret_sauce');
-  await page.locator('[data-test="login-button"]').click();
+  await login(page, 'error_user', 'secret_sauce');
   expect(page.url()).toBe('https://www.saucedemo.com/inventory.html');
-  await page.getByRole('button', { name: 'Open Menu' }).click();
-  await page.locator('[data-test="logout-sidebar-link"]').click(); 
+  await logout(page); 
   await expect(page.url()).toBe('https://www.saucedemo.com/');
 });
 
 // Perform correct login, ./inventory page loaded correctly, incorrect elements on ./inventory page  
 test('Use login visual_user', async ({ page }) => {
-  await page.locator('[data-test="username"]').fill('visual_user');
-  await page.locator('[data-test="password"]').fill('secret_sauce');
-  await page.locator('[data-test="login-button"]').click();
+  await login(page, 'visual_user', 'secret_sauce');
   expect(page.url()).toBe('https://www.saucedemo.com/inventory.html');
-  await page.getByRole('button', { name: 'Open Menu' }).click();
-  await page.locator('[data-test="logout-sidebar-link"]').click(); 
+  await logout(page); 
   await expect(page.url()).toBe('https://www.saucedemo.com/');
 });
 
 // Perform invalid credentials
-test('should show error messages on invalid inputs', async ({ page }) => {
-  await page.locator('[data-test="username"]').fill('invalid');
+test('should show error messages on invalid inputs', async ({ page }) => { //надо попробовать с объектами или массивом объектов
+
+  const incorrectLogins = [
+    {username : 'invalid', password : 'invalid', error : 'Epic sadface: Username and password do not match any user in this service'},
+    {username : '', password: 'secret_sauce', error : 'Epic sadface: Username is required'}, 
+    {username : 'standard_user', password : '', error : 'Epic sadface: Password is required'}, 
+    {username : '', password : '', error : 'Epic sadface: Username is required'},
+  ]
+  for (const {username, password, error} of incorrectLogins){
+    await login(page, username, password);
+    await expect(page.locator('[data-test="error"]')).toHaveText(error);
+  }
+  /*await page.locator('[data-test="username"]').fill('invalid');
   await page.locator('[data-test="password"]').fill('invalid');
   await page.locator('[data-test="login-button"]').click();
   await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username and password do not match any user in this service');
@@ -106,6 +109,6 @@ test('should show error messages on invalid inputs', async ({ page }) => {
   await page.locator('[data-test="password"]').fill('');
   await page.locator('[data-test="login-button"]').click();
   await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username is required'); //????????
-
+  */
 });
 });
