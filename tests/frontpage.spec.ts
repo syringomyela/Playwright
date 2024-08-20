@@ -90,5 +90,25 @@ test('should show error messages on invalid inputs', async ({ page }) => { //Ð½Ð
     await login(page, username, password);
     await expect(page.locator('[data-test="error"]')).toHaveText(error);
   }
+  /*await page.locator('[data-test="username"]').fill('invalid');
+  await page.locator('[data-test="password"]').fill('invalid');
+  await page.locator('[data-test="login-button"]').click();
+  await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username and password do not match any user in this service');
+
+  await page.locator('[data-test="username"]').fill('');
+  await page.locator('[data-test="password"]').fill('invalid');
+  await page.locator('[data-test="login-button"]').click();
+  await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username is required');
+
+  await page.locator('[data-test="username"]').fill('invalid');
+  await page.locator('[data-test="password"]').fill('');
+  await page.locator('[data-test="login-button"]').click();
+  await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Password is required');
+
+  await page.locator('[data-test="username"]').fill('');
+  await page.locator('[data-test="password"]').fill('');
+  await page.locator('[data-test="login-button"]').click();
+  await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username is required'); //????????
+  */
 });
 });
