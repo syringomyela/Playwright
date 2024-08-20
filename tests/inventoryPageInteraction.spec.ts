@@ -7,7 +7,11 @@ let URLVerificators = {
   2 : 'https://www.saucedemo.com/',
 };
 
-
+const login = async (page, username, password) => {
+  await page.locator('[data-test="username"]').fill(username);
+  await page.locator('[data-test="password"]').fill(password);
+  await page.locator('[data-test="login-button"]').click();
+}
 
 test.describe('Inventory interactions tests', () => {
 
@@ -24,8 +28,8 @@ test.describe('Inventory interactions tests', () => {
     test('Open Sidebar Menu and test buttons', async ({ page }) => {
       
       // Click the menu button
-      const sidebarMenu = page.locator('#react-burger-menu-btn'); // # - это для ID
-      const menuItems = page.locator('[data-test$="sidebar-link"]'); //CSS ^= - для выбора элемента, начинающегося с заданного текста; $= - для элемента, который заканчивается на него же
+      const sidebarMenu = page.locator('#react-burger-menu-btn'); // # - это для ID, . - это для класса
+      const menuItems = page.locator('[data-test$="sidebar-link"]'); //CSS ^= - для выбора элемента, начинающегося с заданного текста; $= - для элемента, который на него заканчивается
 
       await sidebarMenu.click();  
       
@@ -36,36 +40,38 @@ test.describe('Inventory interactions tests', () => {
       await expect(page.locator('[data-test="reset-sidebar-link"]')).toBeVisible();
 
       // click all menu buttons in order and compare their URLs 
-      
       for ( let i = 0; i < 4; i++) {
-        //if menu closed reopen it
-        if (!await sidebarMenu.isVisible()) {
+        
+        await page.goto('https://saucedemo.com/');
+        await login(page, 'standard_user', 'secret_sauce');
+        //if menu closed reopen
+        if (!await expect(page.locator('.bm-menu')).toBeVisible()) {
 
           await sidebarMenu.click();
 
         }
         
         //click i button
+        
         await menuItems.nth(i).click();
 
-        if (i === 1 && 2) {
+        if (i === 1 || i === 2) {
 
-          // Check if URL is correct 
-          await expect(page).toHaveURL(URLVerificators[i]);
+          // Check if URL is correct
+          await expect(page).toHaveURL(URLVerificators[i]); 
           // relogin
-          await page.locator('[data-test="username"]').fill('standard_user');
-          await page.locator('[data-test="password"]').fill('secret_sauce');
-          await page.locator('[data-test="login-button"]').click();
-          await page.waitForNavigation(); 
+          await page.goto('https://saucedemo.com/');
+          await login(page, 'standard_user', 'secret_sauce');
 
-        } else { //reset page case
+        } else if (i === 3) { 
             const badgeLocator = page.locator('.shopping_cart_badge');
             await page.locator('.btn_inventory').nth(2).click();
             await expect(badgeLocator).toHaveText('1');
-            await sidebarMenu.click();
             await menuItems.nth(i).click();
-            await expect(badgeLocator).toHaveText('0');
-          } 
+            await expect(badgeLocator).toHaveCount(0);
+          } else {
+            await expect(page).toHaveURL(URLVerificators[i]);
+          }
         }
 
     });
@@ -112,21 +118,25 @@ test.describe('Inventory interactions tests', () => {
 
     });
 
-    test('Sort by Price (Low to High)', async ({ page }) => {
+    test('Sort Low to High', async ({ page }) => {
 
       await page.locator('[data-test="product-sort-container"]').selectOption({ value: 'lohi' });
   
       const prices = await page.locator('.inventory_item_price').allTextContents();
-      const sortedPrices = [...prices].sort((a, b) => parseFloat(a.substring(1)) - parseFloat(b.substring(1))); //копирую - сортирую(убрать знак доллара сабстрингом - перевожу в число - сортирую)
+      const sortedPrices = [...prices].sort((a, b) => 
+        parseFloat(a.substring(1)) - parseFloat(b.substring(1)  //копирую - сортирую(убрать знак доллара сабстрингом - перевожу в число - сортирую)
+            )); 
       expect(prices).toEqual(sortedPrices);
 
     });
   
-    test('Sort by Price (High to Low)', async ({ page }) => {
+    test('Sort High to Low', async ({ page }) => {
       await page.locator('[data-test="product-sort-container"]').selectOption({ value: 'hilo' });
   
       const prices = await page.locator('.inventory_item_price').allTextContents();
-      const sortedPrices = [...prices].sort((a, b) => parseFloat(b.substring(1)) - parseFloat(a.substring(1)));
+      const sortedPrices = [...prices].sort((a, b) => 
+        parseFloat(b.substring(1)) - parseFloat(a.substring(1)
+            ));
       expect(prices).toEqual(sortedPrices);
     });
   })
