@@ -1,0 +1,77 @@
+[33mcommit 8ea0a78a47910ac03865e7d129586ab320870f9b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Merge: 43a4221 cc245b6
+Author: Eugene <giggapigga9000@gmail.com>
+Date:   Tue Aug 20 16:51:41 2024 +0300
+
+    Merge branch 'main' of https://github.com/Floki-Pupkinson/Playwright
+    
+    :c
+
+[33mcommit cc245b6635cea82362cae1cbe9cc564dea1155d7[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Floki-Pupkinson <jjj390131@gmail.com>
+Date:   Tue Aug 20 16:27:32 2024 +0300
+
+    Delete inventoryPageInteraction.spec.ts
+    
+    Wrongly put it at the main folder
+
+[33mcommit 43a42210bc66eeb4fea0c04f008763de61c8633f[m
+Author: Eugene <giggapigga9000@gmail.com>
+Date:   Tue Aug 20 16:24:29 2024 +0300
+
+    Syncronising local rep and GitHub
+
+[33mcommit 0b5534dc708a534422c88928d5e212e4b43403f1[m
+Merge: 0dfa8be 4103455
+Author: Floki-Pupkinson <jjj390131@gmail.com>
+Date:   Tue Aug 20 16:04:43 2024 +0300
+
+    Merge pull request #1 from Floki-Pupkinson/"Open-Sidebar-Menu."-test
+    
+    Update: Fixed "Open Sidebar Menu..." test
+
+[33mcommit 4103455f5d83f1b0ed10eacd69ec0cd66bb1a03d[m[33m ([m[1;31morigin/InventoryTestFix[m[33m)[m
+Author: Floki-Pupkinson <jjj390131@gmail.com>
+Date:   Tue Aug 20 15:54:44 2024 +0300
+
+    Update: Fixed "Open Sidebar Menu..." test
+    
+    Fixed issue with 'for' cycle:
+    
+    Bug: at third iteration 49    await  menuItems.nth(i).click(); couldn't reach sidebar menu element and did not open it.
+    
+    Reason: wrong locator ('#react-burger-menu-btn' instead of '.bm-menu')
+
+[33mcommit 0dfa8be74ed5df51b1d9e5a2f8a0fe3fcdaacb59[m
+Author: Floki-Pupkinson <jjj390131@gmail.com>
+Date:   Tue Aug 20 00:29:01 2024 +0300
+
+    4th iteration upon sidemenu testing
+    
+    Fixed first two cycles, after this still breaking - doesn't open sidemenu
+
+[33mcommit 480f50641e97ae0659b6e2d622edcdbee973a1ad[m
+Author: Eugene <giggapigga9000@gmail.com>
+Date:   Mon Aug 19 20:21:44 2024 +0300
+
+    Deleted commented horror code
+
+[33mcommit 4732beaca48304fd5037a4cacd945f0720e3299f[m
+Author: Floki-Pupkinson <jjj390131@gmail.com>
+Date:   Mon Aug 19 20:13:35 2024 +0300
+
+    Что я узнал про Playwright.md
+    
+    Какие навыки были отработаны при знакомстве с Playwright
+
+[33mcommit 210f921983c05f5b89c4fcc7f608e2064e6f4146[m
+Author: Eugene <giggapigga9000@gmail.com>
+Date:   Mon Aug 19 18:58:26 2024 +0300
+
+    frontpage.spec.ts: added helper functions for login, logout sequences and used array for data in 'should show error messages on invalid inputs' test
+
+[33mcommit ce8f0b461ed84a3d27f13352a5176b504c6ceb52[m
+Author: Eugene <giggapigga9000@gmail.com>
+Date:   Mon Aug 19 18:18:47 2024 +0300
+
+    First commit -commiting all files to the rep
